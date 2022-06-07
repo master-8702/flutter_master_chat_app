@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_master_chat_app/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 
 class ChatScreen extends StatefulWidget {
   static const String id = "chat_screen";
@@ -34,51 +35,58 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: null,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.logout_outlined),
-              onPressed: () {
-                _auth.signOut();
-                Navigator.pop(context);
-              }),
-        ],
-        title: Text('M️Chat'),
-        backgroundColor: Colors.lightBlueAccent,
-      ),
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              decoration: kMessageContainerDecoration,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      onChanged: (value) {
-                        //Do something with the user input.
-                      },
-                      decoration: kMessageTextFieldDecoration,
-                    ),
+    return ProgressHUD(
+      child: Builder(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            leading: null,
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.logout_outlined),
+                  onPressed: () async {
+                    final progressIndicator = ProgressHUD.of(context);
+                    progressIndicator?.showWithText("Signing Out ...");
+                    await _auth.signOut();
+                    Navigator.pop(context);
+                    progressIndicator?.dismiss();
+                  }),
+            ],
+            title: Text('M️Chat'),
+            backgroundColor: Colors.lightBlueAccent,
+          ),
+          body: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                  decoration: kMessageContainerDecoration,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: TextField(
+                          onChanged: (value) {
+                            //Do something with the user input.
+                          },
+                          decoration: kMessageTextFieldDecoration,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          //Implement send functionality.
+                        },
+                        child: Text(
+                          'Send',
+                          style: kSendButtonTextStyle,
+                        ),
+                      ),
+                    ],
                   ),
-                  TextButton(
-                    onPressed: () {
-                      //Implement send functionality.
-                    },
-                    child: Text(
-                      'Send',
-                      style: kSendButtonTextStyle,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
