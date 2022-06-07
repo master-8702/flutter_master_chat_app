@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_master_chat_app/components/custome_material_button.dart';
 import 'package:flutter_master_chat_app/constants.dart';
+import 'package:flutter_master_chat_app/screens/chat_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = "registration_screen";
@@ -10,6 +12,7 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  final _auth = FirebaseAuth.instance;
   String email = "";
   String password = "";
   @override
@@ -62,9 +65,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             CustomMaterialButton(
               buttonText: "Register",
               buttonColor: Colors.blueAccent,
-              onPressed: () {
-                print(email);
-                print(password);
+              onPressed: () async {
+                try {
+                  if (email != null && password != null) {
+                    final newUser = await _auth.createUserWithEmailAndPassword(
+                        email: email, password: password);
+                    if (newUser != null) {
+                      Navigator.pushNamed(context, ChatScreen.id);
+                    }
+                  }
+                } on FirebaseAuthException catch (e) {
+                  if (e.code == 'weak-password') {
+                    print('The password provided is too weak.');
+                  } else if (e.code == 'email-already-in-use') {
+                    print('The account already exists for that email.');
+                  }
+                } catch (e) {
+                  print(e);
+                }
               },
             ),
           ],
