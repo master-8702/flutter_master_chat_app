@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_master_chat_app/components/custome_material_button.dart';
 import 'package:flutter_master_chat_app/constants.dart';
+import 'package:flutter_master_chat_app/screens/chat_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = "login_screen";
@@ -10,6 +12,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _auth = FirebaseAuth.instance;
+  late String email;
+  late String password;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
               keyboardType: TextInputType.emailAddress,
               textAlign: TextAlign.center,
               onChanged: (value) {
-                //Do something with the user input.
+                email = value;
               },
               decoration: kFormFieldsInputDecoration.copyWith(
                   hintText: "Enter Your Email"),
@@ -48,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
               obscuringCharacter: '#',
               obscureText: true,
               onChanged: (value) {
-                //Do something with the user input.
+                password = value;
               },
               decoration: kFormFieldsInputDecoration.copyWith(
                   hintText: "Enter Your Password"),
@@ -59,8 +64,20 @@ class _LoginScreenState extends State<LoginScreen> {
             CustomMaterialButton(
               buttonText: "Login",
               buttonColor: Colors.lightBlueAccent,
-              onPressed: () {
-                //Implement login functionality.
+              onPressed: () async {
+                try {
+                  var signedInUser = await _auth.signInWithEmailAndPassword(
+                      email: email, password: password);
+
+                  if (signedInUser != null) {
+                    Navigator.pushNamed(context, ChatScreen.id);
+                  }
+                } on FirebaseAuthException catch (e) {
+                  print("from firebase: ");
+                  print(e.message);
+                } catch (e) {
+                  print(e);
+                }
               },
             ),
           ],

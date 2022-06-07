@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.flutter_master_chat_app">
     <uses-permission android:name="android.permission.INTERNET" />
+<!--    the usesCleartextTraffic text is added for firebase authentication -->
+<!--    in flutter firebase needs that in order to work-->
    <application
        android:usesCleartextTraffic="true"
         android:label="flutter_master_chat_app"
