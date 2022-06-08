@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_master_chat_app/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
   static const String id = "chat_screen";
@@ -12,8 +14,10 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final _fireStore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   late User loggedInUser;
+  late String messages;
 
   @override
   void initState() {
@@ -31,6 +35,26 @@ class _ChatScreenState extends State<ChatScreen> {
         print(loggedInUser.email);
       }
     });
+  }
+
+  void getMessages() async {
+    var messages = await _fireStore.collection('messages').get();
+    // print(messages.docs.toList();
+    for (var messages in messages.docs) {
+      print(messages.data().values);
+      for (var message in messages.data().values) {
+        print(message);
+      }
+      print("***");
+    }
+  }
+
+  void getMessageFromStream() async {
+    await for (var snapshot in _fireStore.collection('messages').snapshots()) {
+      for (var messages in snapshot.docs) {
+        print(messages.data());
+      }
+    }
   }
 
   @override
@@ -67,14 +91,21 @@ class _ChatScreenState extends State<ChatScreen> {
                       Expanded(
                         child: TextField(
                           onChanged: (value) {
-                            //Do something with the user input.
+                            messages = value;
                           },
                           decoration: kMessageTextFieldDecoration,
                         ),
                       ),
                       TextButton(
                         onPressed: () {
-                          //Implement send functionality.
+                          _fireStore.collection('messages').add({
+                            'messageText': messages,
+                            'sender': _auth.currentUser?.email
+                          });
+                          print('from get messages:');
+                          // getMessages();
+                          print('from stream');
+                          getMessageFromStream();
                         },
                         child: Text(
                           'Send',
