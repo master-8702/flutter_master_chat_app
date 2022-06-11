@@ -15,6 +15,8 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final _fireStore = FirebaseFirestore.instance;
+  final Stream<QuerySnapshot> _messageStream =
+      FirebaseFirestore.instance.collection('messages').snapshots();
   final _auth = FirebaseAuth.instance;
   late User loggedInUser;
   late String messages;
@@ -23,6 +25,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     getCurrentUser();
+    getMessageFromStream();
   }
 
   void getCurrentUser() {
@@ -52,7 +55,10 @@ class _ChatScreenState extends State<ChatScreen> {
   void getMessageFromStream() async {
     await for (var snapshot in _fireStore.collection('messages').snapshots()) {
       for (var messages in snapshot.docs) {
+        print("here ..");
         print(messages.data());
+        var a = messages.data();
+        print("plpl" + a['sender']);
       }
     }
   }
@@ -83,6 +89,34 @@ class _ChatScreenState extends State<ChatScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
+                StreamBuilder<QuerySnapshot>(
+                    stream: _messageStream,
+                    builder: (context, snapshot) {
+                      List<ListTile> tileWidgets = [];
+                      if (snapshot.hasError) {
+                        return const Text('Something went wrong');
+                      }
+
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            backgroundColor: Colors.lightBlueAccent,
+                          ),
+                        );
+                      }
+
+                      List<Text> textWIdgets = [];
+
+                      var streamData = snapshot.data;
+                      var streamdata2 = streamData?.docs;
+                      ListTile lt;
+                      for (var message in streamdata2!) {
+                        textWIdgets.add(Text(message['messageText']));
+                        textWIdgets.add(Text(message['sender']));
+                      }
+
+                      return Column(children: textWIdgets);
+                    }),
                 Container(
                   decoration: kMessageContainerDecoration,
                   child: Row(
