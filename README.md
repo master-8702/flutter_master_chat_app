@@ -1,4 +1,4 @@
-# flutter_master_chat_app
+# master_chat_app (Flutter)
 
 a mobile group chat app with a login and a registration functionality using firebase.
 
