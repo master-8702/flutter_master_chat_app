@@ -21,6 +21,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     return Scaffold(
       // resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
+      //here we wrap the whole body with progressHUD inorder to implement progress indicator
+      // sign while disabling access to the rest of the widgets (components)
       body: ProgressHUD(
         child: Builder(
           builder: (context) => Padding(
@@ -31,12 +33,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               children: <Widget>[
                 Hero(
                   tag: "logo",
-                  child: Container(
+                  child: SizedBox(
                     height: 200.0,
                     child: Image.asset('images/master_chat_icon.png'),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 48.0,
                 ),
                 TextField(
@@ -49,7 +51,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     hintText: "Enter Your Email",
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 8.0,
                 ),
                 TextField(
@@ -62,25 +64,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   decoration: kFormFieldsInputDecoration.copyWith(
                       hintText: "Enter Your Password"),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 24.0,
                 ),
                 CustomMaterialButton(
                   buttonText: "Register",
                   buttonColor: Colors.blueAccent,
                   onPressed: () async {
+                    // and in here we activate the progress indicator in the async method
                     final progressIndicator = ProgressHUD.of(context);
                     progressIndicator?.showWithText("Registering ...");
 
                     try {
-                      if (email != null && password != null) {
-                        final newUser =
-                            await _auth.createUserWithEmailAndPassword(
-                                email: email, password: password);
-                        if (newUser != null) {
-                          Navigator.pushNamed(context, ChatScreen.id);
-                        }
-                      }
+                      final newUser =
+                          await _auth.createUserWithEmailAndPassword(
+                              email: email, password: password);
+
+                      Navigator.pushNamed(context, ChatScreen.id);
+                      // and we will disable the progress indicator it after the async method finished it's work
                       progressIndicator?.dismiss();
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'weak-password') {

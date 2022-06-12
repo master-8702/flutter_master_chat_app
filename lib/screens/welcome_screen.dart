@@ -18,7 +18,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -27,27 +27,27 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               children: <Widget>[
                 Hero(
                   tag: 'logo',
-                  child: Container(
-                    child: Image.asset('images/master_chat_icon.png'),
+                  child: SizedBox(
                     height: 120.0,
                     width: 120,
+                    child: Image.asset('images/master_chat_icon.png'),
                   ),
                 ),
                 AnimatedTextKit(
                   animatedTexts: [
                     TypewriterAnimatedText(
                       'Master Chat',
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         fontSize: 45.0,
                         fontWeight: FontWeight.w900,
                       ),
-                      speed: Duration(milliseconds: 200),
+                      speed: const Duration(milliseconds: 200),
                     ),
                   ],
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 48.0,
             ),
             CustomMaterialButton(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_master_chat_app/screens/login_screen.dart';
+// this class is create for the purpose of implementing DRY principle
+// since we were using similar buttons three different places we decided to
+// do not repeat ourselves and reuse the code by making it independent widget
 
 class CustomMaterialButton extends StatelessWidget {
   String buttonText = "";
@@ -14,7 +16,7 @@ class CustomMaterialButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Material(
         elevation: 5.0,
         color: buttonColor,
@@ -27,7 +29,7 @@ class CustomMaterialButton extends StatelessWidget {
           height: 42.0,
           child: Text(
             buttonText,
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
         ),
       ),
