@@ -25,7 +25,7 @@ class MessageCard extends StatelessWidget {
         children: [
           Text(
             sender,
-            style: const TextStyle(fontSize: 8, color: Colors.grey),
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
           ),
           Material(
             elevation: 5.0,
@@ -43,11 +43,14 @@ class MessageCard extends StatelessWidget {
               padding:
                   const EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 2),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment:
+                    isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: [
                   Text(
                     message,
-                    style: TextStyle(color: isMe ? Colors.white : Colors.black),
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: isMe ? Colors.white : Colors.black),
                   ),
                   const SizedBox(
                     height: 5,
@@ -55,9 +58,9 @@ class MessageCard extends StatelessWidget {
                   Text(
                     timestamp,
                     style: TextStyle(
-                        fontSize: 8,
-                        color: isMe ? Colors.white54 : Colors.black54),
-                    textAlign: TextAlign.end,
+                        fontSize: 11,
+                        color: isMe ? Colors.white70 : Colors.black54),
+                    // textAlign: TextAlign.start,
                   ),
                 ],
               ),
